@@ -1,16 +1,22 @@
 <?php
-/* Database credentials. Assuming you are running MySQL
-server with default setting (user 'root' with no password) */
-define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
-define('DB_NAME', 'matrimony');
 
-/* Attempt to connect to MySQL database */
-$link = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+$host = 'ec2-3-228-235-79.compute-1.amazonaws.com';
+$port = '5432';
+$dbname = 'd326i17bserkrq';
+$user = 'juxjphcovnrzkd';
+$password = '2ccbda92f851b59532d84861d30e3efe6323990ad82f6882e135153f4a5d365a';
 
-// Check connection
-if($link === false){
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-}
+$db = pg_connect(
+    "
+    host = $host
+    port = $port
+    dbname = $dbname
+    user = $user
+    password = $password
+    "
+) or die('Could not connect: ' . pg_last_error());;
+
+
+session_start();
+
 ?>
