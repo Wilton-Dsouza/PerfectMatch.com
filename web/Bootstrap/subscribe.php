@@ -20,7 +20,7 @@ if(isset($_POST['submit'])){
 
     if($execqury){
 
-                header("location: index.html");
+                header("location: index.php");
             } else{
                 echo "Something went wrong. Please try again later.";
             }

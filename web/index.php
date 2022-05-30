@@ -1,189 +1,356 @@
-<?php
-// Initialize the session
-session_start();
-
-// Check if the user is already logged in, if yes then redirect him to welcome page
-// if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-//    header("location: index.html");
-//    exit;
-//  }
-
-// Include config file
-require_once "config.php";
-
-// Define variables and initialize with empty values
-$username = $password = "";
-$username_err = $password_err = "";
-
-// Processing form data when form is submitted
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-
-    // Check if username is empty
-    if(empty(trim($_POST["username"]))){
-        $username_err = "Please enter username.";
-    } else{
-        $username = trim($_POST["username"]);
-    }
-
-    // Check if password is empty
-    if(empty(trim($_POST["password"]))){
-        $password_err = "Please enter your password.";
-    } else{
-        $password = trim($_POST["password"]);
-    }
-
-    // Validate credentials
-    if(empty($username_err) && empty($password_err)){
-        // Prepare a select statement
-        $sql = "SELECT id, username, password FROM users WHERE username = ?";
-
-        if($stmt = mysqli_prepare($link, $sql)){
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "s", $param_username);
-
-            // Set parameters
-            $param_username = $username;
-
-            // Attempt to execute the prepared statement
-            if(mysqli_stmt_execute($stmt)){
-                // Store result
-                mysqli_stmt_store_result($stmt);
-
-                // Check if username exists, if yes then verify password
-                if(mysqli_stmt_num_rows($stmt) == 1){
-                    // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
-                    if(mysqli_stmt_fetch($stmt)){
-                        if($password==$hashed_password){
-                            // Password is correct, so start a new session
-                            session_start();
-
-                            // Store data in session variables
-                            
-                            $_SESSION["id"] = $id;
-                            $_SESSION["username"] = $username;
-
-                            // Redirect user to welcome page
-                            header("location: index.html");
-                        } else{
-                            // Display an error message if password is not valid
-                            $password_err = "The password you entered was not valid.";
-                        }
-                    }
-                } else{
-                    // Display an error message if username doesn't exist
-                    $username_err = "No account found with that username.";
-                }
-            } else{
-                echo "Oops! Something went wrong. Please try again later.";
-            }
-
-            // Close statement
-            mysqli_stmt_close($stmt);
-        }
-    }
-
-    // Close connection
-    mysqli_close($link);
-}
-?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <!-- fontawesome -->
-    <script src="https://kit.fontawesome.com/a2f85f9251.js" crossorigin="anonymous"></script>
+  <meta charset="utf-8">
+  <title>Swayamvar</title>
 
-    <!-- Googlefonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Russo+One&family=Ubuntu&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
+  <style media="screen">
+  html {
+    scroll-behavior: smooth;
+  }
 
-    <!-- Bootstrap CDN -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.css">
-    <style type="text/css">
-    body {
-
-/* background: #ff4646; */
-    background-image: url('1316808.jpg');
-
-}
-.login-form {
-width: 340px;
-  margin: 50px auto;
-}
-.login-form form {
-  margin-bottom: 15px;
-    background: #f7f7f7;
-    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
-    padding: 30px;
-}
-.login-form h2 {
-    margin: 0 0 15px;
-}
-.form-control, .btn {
-    min-height: 38px;
-    border-radius: 2px;
-
-}
-.btn {
-    font-size: 15px;
-    font-weight: bold;
-    background: #ff4646;
-}
-.btn:hover{
-  background: #ff847c;
-}
-/* navigation bar */
-.navbar{
-  padding: 1.5rem 42% 4.5rem;
+  #myBtn {
+display: none;
+position: fixed;
+bottom: 20px;
+right: 30px;
+z-index: 99;
+font-size: 18px;
+border: none;
+outline: none;
+background-color: #ff4646;
+color: white;
+cursor: pointer;
+padding: 15px;
+border-radius: 4px;
 }
 
-.navbar-brand{
-  font-family: 'Pirata One', cursive;
-  font-size: 4.2rem;
-  font-weight: bold;
+#myBtn:hover {
+background-color:  #ff847c;
 }
+  </style>
 
-.navbar-dark .navbar-brand {
-  /* -webkit-text-stroke: 1px #f58634; */
-  text-shadow: 2px 2px 4px black;
-    color: #ffcc29;
-}
-    </style>
+  <!-- Googlefonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=Russo+One&family=Ubuntu&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Pirata+One&display=swap" rel="stylesheet">
 </head>
+<!-- Bootstrap CDN -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<!-- CSS -->
+<link rel="stylesheet" href="css/styles.css">
+
+<!-- fontawesome -->
+<script src="https://kit.fontawesome.com/a2f85f9251.js" crossorigin="anonymous"></script>
+
+<!-- jQuery and script -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+
+
 <body>
-  <nav class="navbar  navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="">Swayamvar<i class="fas fa-fire"></i></a>
-  </nav>
-    <div class="login-form">
-        <h2>Login</h2>
-        <p>Please fill in your credentials to login.</p>
-        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
-            <div class="form-group <?php echo (!empty($username_err)) ? 'has-error' : ''; ?>">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control" value="<?php echo $username; ?>">
-                <span class="help-block"><?php echo $username_err; ?></span>
-            </div>
-            <div class="form-group <?php echo (!empty($password_err)) ? 'has-error' : ''; ?>">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control">
-                <span class="help-block"><?php echo $password_err; ?></span>
-            </div>
-            <div class="form-group">
-                <input onclick="myalert()"type="submit" class="btn btn-primary" value="Login">
-            </div>
-            <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
-        </form>
+  <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>
+
+
+  <section id="title">
+    <div class="container-fluid">
+
+
+
+      <!-- Nav Bar -->
+
+      <nav class="navbar   navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="">Swayamvar<i class="fas fa-fire"></i></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="#footer">Contact</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#pricing">Pricing</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#cta">Download</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="profile.php">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="logout.php">Log Out</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+
+
+      <!-- Title -->
+      <div class="row">
+
+
+        <div class="col-lg-6 col-md-12">
+          <h1>We bring people together. Love unites them....</h1>
+          <a href="https://apps.apple.com/in/app/tinder-dating-meet-people/id547702041" class="btn btn-dark btn-lg download-button btn-info" role="button"><i class="fab fa-apple"></i> Download</a>
+          <!-- <button type="button" class="btn btn-dark btn-lg download-button"><i class="fab fa-apple"></i> Download</button> -->
+
+          <!-- <button type="button"></button> -->
+          <button onclick="myfunc()" type="button" class="btn btn-outline-light btn-lg download-button"><i class="fab fa-google-play"></i> Download</button>
+
+        </div>
+        <div class="col-lg-6 col-md-12">
+          <img class="title-img" src="images/couple2.jpg" alt="iphone-mockup">
+        </div>
+
+      </div>
+
     </div>
-</body>
-</html>
-<script>
-function myalert(){
-  alert("Login Successful");
+
+  </section>
+
+
+  <!-- Features -->
+
+  <section id="features">
+    <div class="row">
+      <div class="feature-box col-lg-4">
+        <i class="icon fas fa-check-circle fa-4x"></i>
+        <h3>Easy to use.</h3>
+        <p>Find your Special Someone.</p>
+
+      </div>
+      <div class="feature-box col-lg-4">
+        <i class="icon fas fa-bullseye fa-4x"></i>
+        <h3>Elite Clientele</h3>
+        <p>Become a Premium Member & Start a Conversation.</p>
+      </div>
+      <div class="feature-box col-lg-4">
+        <i class="icon fas fa-heart fa-4x"></i>
+        <h3>Guaranteed to work.</h3>
+        <p>Your story is waiting to happen!</p>
+      </div>
+    </div>
+
+
+  </section>
+
+  <!-- Testimonials -->
+
+  <section id="testimonials">
+
+    <div id="testimonial-corousel" class="carousel slide" data-ride="false">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+
+          <h2>Love is only essence of our relationship.</h2>
+          <img class="testimonial-img" src="images/couple 5.jpg" alt="dog-profile">
+          <em>Bengalore ,Karnataka</em>
+
+        </div>
+        <div class="carousel-item">
+          <h2 class="testimonial-text">YOU and ME together and forever!.</h2>
+          <img class="testimonial-img" src="images/couple.jpg" alt="lady-profile">
+          <em>Amritsar, Punjab</em>
+
+        </div>
+
+        <div class="carousel-item">
+          <h2 class="testimonial-text">Finally, I got the opportunity to change my last name.</h2>
+          <img class="testimonial-img" src="images/couple6.jpg" alt="lady-profile">
+          <em>Manjeshwar, Kerala</em>
+
+        </div>
+
+      </div>
+      <a class="carousel-control-prev" href="#testimonial-corousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon"></span>
+
+      </a>
+      <a class="carousel-control-next" href="#testimonial-corousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon"></span>
+
+      </a>
+    </div>
+
+
+
+
+  </section>
+
+
+  <!-- Press -->
+
+  <section id="press">
+    <img class="press-logo" src="images/techcrunch.png" alt="tc-logo">
+    <img class="press-logo" src="images/tnw.png" alt="tnw-logo">
+    <img class="press-logo" src="images/bizinsider.png" alt="biz-insider-logo">
+    <img class="press-logo" src="images/mashable.png" alt="mashable-logo">
+
+  </section>
+
+
+  <!-- Pricing -->
+
+  <section id="pricing">
+
+    <h2>A Plan for Every Perfect Couple !</h2>
+    <p>Simple and affordable price plans for you and your soulmate.</p>
+
+    <div class="row">
+
+      <div class="pricing-column col-lg-4 col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3>Free</h3>
+          </div>
+          <div class="card-body">
+            <h2>Free</h2>
+            <p>5 Matches Per Day</p>
+            <p>10 Messages Per Day</p>
+            <p>Unlimited App Usage</p>
+            <br>
+            <br>
+            <a href="subscribe.php" class="btn btn-lg btn-block btn-outline-dark btn-info" role="button">Subscribe</a>
+            <!-- <button href="C:\Users\mally\OneDrive\Desktop\myfiles\Bootstrap\TinDog-Start-master\index2.html" class="btn btn-lg btn-block btn-outline-dark" type="button">Sign Up</button> -->
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="pricing-column col-lg-4 col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h3>Gold</h3>
+          </div>
+          <div class="card-body">
+            <h2>₹549 / mo</h2>
+            <p>Unlimited Matches</p>
+            <p>Unlimited Messages</p>
+            <p>Unlimited App Usage</p>
+            <br>
+            <br>
+            <button class="btn btn-lg btn-block btn-dark" type="button">Subscribe</button>
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+
+      <div class="pricing-column col-lg-4 col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h3>Platinum</h3>
+          </div>
+          <div class="card-body">
+            <h2>₹999 / mo</h2>
+            <p>Pirority Listing</p>
+            <p>Unlimited Matches</p>
+            <p>Unlimited Messages</p>
+            <p>Unlimited App Usage</p>
+            <button class="btn btn-lg btn-block btn-dark" type="button">Subscribe</button>
+          </div>
+
+        </div>
+      </div>
+
+      </div>
+
+
+
+  </section>
+
+
+  <!-- Call to Action -->
+
+  <section id="cta">
+
+    <h3 class="cta-heading">Find the True Love of Your Life Today.</h3>
+    <!-- <button class="download-button btn btn-lg btn-dark" type="button"><i class="fab fa-apple"></i> Download</button> -->
+    <!-- <button class="download-button btn btn-lg btn-dark" type="button"><i class="fab fa-google-play"></i> Download</button> -->
+    <a href="https://apps.apple.com/in/app/tinder-dating-meet-people/id547702041" class="btn btn-dark btn-lg download-button btn-info" role="button"><i class="fab fa-apple"></i> Download</a>
+    <button onclick="myfunc()" type="button" class="btn btn-outline-light btn-lg download-button"><i class="fab fa-google-play"></i> Download</button>
+
+  </section>
+
+  <div class="dropdown-menu">
+  <form class="px-4 py-3">
+    <div class="mb-3">
+      <label for="exampleDropdownFormEmail1" class="form-label">Email address</label>
+      <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com">
+    </div>
+    <div class="mb-3">
+      <label for="exampleDropdownFormPassword1" class="form-label">Password</label>
+      <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password">
+    </div>
+    <div class="mb-3">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" id="dropdownCheck">
+        <label class="form-check-label" for="dropdownCheck">
+          Remember me
+        </label>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Sign in</button>
+  </form>
+  <div class="dropdown-divider"></div>
+  <a class="dropdown-item" href="#">New around here? Sign up</a>
+  <a class="dropdown-item" href="#">Forgot password?</a>
+</div>
+
+
+  <!-- Footer -->
+
+  <footer id="footer">
+    <a href="https://www.shaadi.com/" title="website name"><i class="social-icon fab fa-facebook"></i></a>
+    <a href="https://play.google.com/store/apps/details?id=com.tinder&hl=en_IN&gl=US" title="website name"><i class="social-icon fab fa-twitter"></i></a>
+    <a href="https://play.google.com/store/apps/details?id=com.tinder&hl=en_IN&gl=US" title="website name"><i class="social-icon fab fa-instagram"></i></a>
+    <a href="https://play.google.com/store/apps/details?id=com.tinder&hl=en_IN&gl=US" title="website name"><i class="social-icon fas fa-envelope"></i></a>
+
+    <p>© Copyright 2021 Swayamvar</p>
+
+  </footer>
+
+  <script>
+    // <!-- download button part -->
+function myfunc() {
+  location.replace("https://play.google.com/store/apps/details?id=com.tinder&hl=en_IN&gl=US")}
+
+// <!-- top button part -->
+  var mybutton = document.getElementById("myBtn");
+
+// When the user scrolls down 20px from the top of the document, show the button
+window.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
 }
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
+
+
 </script>
+
+
+</body>
+
+
+
+</html>

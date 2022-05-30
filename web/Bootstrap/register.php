@@ -78,7 +78,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
                 // Redirect to login page
-                header("location: index.php");
+                header("location: login.php");
             } else{
                 echo "Something went wrong. Please try again later.";
             }
@@ -191,7 +191,7 @@ width: 340px;
                 <input onclick="myalert()" type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-primary" value="Reset">
             </div>
-            <p>Already have an account? <a href="index.php">Login here</a>.</p>
+            <p>Already have an account? <a href="login.php">Login here</a>.</p>
         </form>
     </div>
 </body>
