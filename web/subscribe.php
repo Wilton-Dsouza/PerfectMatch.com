@@ -100,7 +100,7 @@ width: 340px;
 </head>
 <body>
   <nav class="navbar  navbar-expand-lg navbar-dark">
-    <a class="navbar-brand" href="">Swayamvar<i class="fas fa-fire"></i></a>
+    <a class="navbar-brand" href="">PerfectMatch<i class="fas fa-fire"></i></a>
   </nav>
 
     <div class="login-form">
