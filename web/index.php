@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Swayamvar</title>
+  <title>PerfectMatch</title>
 
   <style media="screen">
   html {
