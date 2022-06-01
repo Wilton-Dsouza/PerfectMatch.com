@@ -196,8 +196,3 @@ width: 340px;
     </div>
 </body>
 </html>
-<script>
-function myalert(){
-  alert("Registered Successful");
-}
-</script>
