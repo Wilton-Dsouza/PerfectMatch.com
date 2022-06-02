@@ -67,7 +67,7 @@ public class NewTest {
 		Thread.sleep(5000);
 		WebElement imageInSubscribe = driver.findElement(By.xpath("//*[@id=\"image\"]"));
 		//js.executeScript("driver.findElement(By.xpath(\"//*[@id=\\\"image\\\"]\")).value="+path);
-	  	String path = new File("images\\hiesenberg.jpg").getAbsolutePath();
+	  	String path = new File("web\\images\\hiesenberg.jpg").getAbsolutePath();
 		imageInSubscribe.sendKeys(path);
 		Thread.sleep(5000);
 		
