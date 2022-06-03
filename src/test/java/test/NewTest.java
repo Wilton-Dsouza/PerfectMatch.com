@@ -12,6 +12,8 @@ import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -30,6 +32,7 @@ public class NewTest {
 		// driver.get("https://www.instagram.com/");
 		driver.get("https://matrimony-perfectmatch.000webhostapp.com/login.php");
 		Thread.sleep(5000);
+	  	driver.manage().window().maximize();
 		
 
 //		WebElement ele = driver.findElement(By.xpath("//*[text()='Sign up now']"));
@@ -102,12 +105,14 @@ public class NewTest {
   
   @Test
   public void Navigation() throws InterruptedException {
+	  
 	  WebDriverManager.chromedriver().setup();
 		JavascriptExecutor js;
 		WebDriver driver = new ChromeDriver();
 		js = (JavascriptExecutor) driver;
 		driver.get("https://matrimony-perfectmatch.000webhostapp.com/login.php");
 		Thread.sleep(5000);
+	  	driver.manage().window().maximize();
 		WebElement name1 = driver.findElement(By.name("username"));
 		WebElement password1 = driver.findElement(By.name("password"));
 		WebElement login = driver.findElement(By.xpath("/html/body/div[1]/form/div[3]/input"));
@@ -142,6 +147,7 @@ public class NewTest {
 		js = (JavascriptExecutor) driver;
 		driver.get("https://matrimony-perfectmatch.000webhostapp.com/login.php");
 		Thread.sleep(5000);
+	  	driver.manage().window().maximize();
 		WebElement name1 = driver.findElement(By.name("username"));
 		WebElement password1 = driver.findElement(By.name("password"));
 		WebElement login = driver.findElement(By.xpath("/html/body/div[1]/form/div[3]/input"));
