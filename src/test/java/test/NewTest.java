@@ -55,11 +55,11 @@ public class NewTest {
 		password1.sendKeys("123456@");
 		login.click();
 	  	Thread.sleep(5000);
-// 		WebElement pricing = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[2]/a"));
-// 		pricing.click();
-// 		Thread.sleep(5000);
-// 		WebElement assertLabel = driver.findElement(By.xpath("//*[@id=\"pricing\"]/h2"));
-// 		Assert.assertEquals("A Plan for Every Perfect Couple !", assertLabel.getText());
+		WebElement pricing = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[2]/a"));
+		pricing.click();
+		Thread.sleep(5000);
+		WebElement assertLabel = driver.findElement(By.xpath("//*[@id=\"pricing\"]/h2"));
+		Assert.assertEquals("A Plan for Every Perfect Couple !", assertLabel.getText());
 		WebElement subscribeFree = driver.findElement(By.xpath("//*[@id=\"pricing\"]/div/div[1]/div/div[2]/a"));
 		js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].scrollIntoView(true);",subscribeFree);
@@ -87,8 +87,8 @@ public class NewTest {
 	    // click on OK to accept with accept()
 	    al.accept();
 	    Thread.sleep(4000);
-// 	    WebElement profileBtn = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[4]/a"));
-// 	    profileBtn.click();	    
+	    WebElement profileBtn = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[4]/a"));
+	    profileBtn.click();	    
 	   
 	   
 		
