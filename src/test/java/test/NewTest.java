@@ -51,6 +51,7 @@ public class NewTest {
 		name1.sendKeys("Tester");
 		password1.sendKeys("123456@");
 		login.click();
+	  	Thread.sleep(3000);
 		WebElement pricing = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[2]/a"));
 		pricing.click();
 		Thread.sleep(5000);
@@ -113,6 +114,7 @@ public class NewTest {
 		name1.sendKeys("Tester");
 		password1.sendKeys("123456@");
 		login.click();
+	  	Thread.sleep(5000);
 		WebElement contactTab = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[1]/a"));
 		contactTab.click();
 		Thread.sleep(2000);
@@ -145,6 +147,7 @@ public class NewTest {
 		WebElement login = driver.findElement(By.xpath("/html/body/div[1]/form/div[3]/input"));
 		name1.sendKeys("Tester");
 		password1.sendKeys("123456@");
+	  	Thread.sleep(3000);
 		login.click();
 		WebElement profileTab = driver.findElement(By.xpath("//*[@id=\"navbarSupportedContent\"]/ul/li[4]/a"));
 		profileTab.click();
